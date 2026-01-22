@@ -139,188 +139,266 @@ The goal is to **confuse attackers while gathering intelligence**.
         │  - live feed                     │
         │  - charts                        │
         │  - behavior clusters             │
-        └─────────────────────────────────┘ text```
+        └─────────────────────────────────┘ 
+---
+
+## 📁 Project Structure
+
+The repository is organized to ensure **modularity, clarity, and long-term extensibility**.
+
+adaptive-honeypot/
+├── README.md
+├── pyproject.toml / requirements.txt
+├── config/
+│ ├── global.yaml
+│ ├── services.yaml
+│ ├── logging.yaml
+│ └── ml.yaml
+│
+├── honeypot/
+│ ├── init.py
+│ │
+│ ├── core/
+│ │ ├── init.py
+│ │ ├── server.py
+│ │ ├── session.py
+│ │ ├── events.py
+│ │ └── config.py
+│ │
+│ ├── services/
+│ │ ├── init.py
+│ │ ├── base.py
+│ │ ├── ssh.py
+│ │ ├── http.py
+│ │ └── ftp.py
+│ │
+│ ├── logging/
+│ │ ├── init.py
+│ │ ├── logger.py
+│ │ └── formatter.py
+│ │
+│ ├── storage/
+│ │ ├── init.py
+│ │ ├── database.py
+│ │ └── models.py
+│ │
+│ ├── ml/
+│ │ ├── init.py
+│ │ ├── features.py
+│ │ ├── clustering.py
+│ │ └── profiles.py
+│ │
+│ ├── adapt/
+│ │ ├── init.py
+│ │ ├── engine.py
+│ │ └── strategies.py
+│ │
+│ └── utils/
+│ ├── init.py
+│ ├── timing.py
+│ └── net.py
+│
+├── dashboard/
+│ ├── app.py
+│ ├── routes.py
+│ ├── templates/
+│ │ └── index.html
+│ └── static/
+│ ├── css/
+│ └── js/
+│
+├── scripts/
+│ ├── run_honeypot.py
+│ └── init_db.py
+│
+└── data/
+├── honeypot.db
+└── logs/
 
 
-
-## 🔄 3. Attack Flow (End-to-End)
-
-This section describes the **complete lifecycle of an attack**, from initial connection to adaptive deception and visualization.
 
 ---
 
-### 🧨 Step-by-Step Flow
+## 🧩 2. Responsibility of Each Major Module
 
 ---
 
-### 1️⃣ Attacker Connects
-- Example:
-  - SSH on port `2222`
-- Attacker assumes:
-  - A real server is running
-  - Standard service configuration
+### ⚙️ `config/`
+- Centralized configuration directory
+- No hardcoded ports, banners, delays, or thresholds
+- YAML chosen for readability and safety
+- All runtime behavior is config-driven
 
 ---
 
-### 2️⃣ Honeypot Service Responds
-- Sends a realistic fake banner:
-  - `OpenSSH_8.9p1`
-- Accepts credentials but:
-  - Always fails authentication **or**
-  - Allows partial, controlled interaction
-- No real system access is ever granted
+### 🧠 `honeypot/core/`
+The **backbone of the system**.
+
+#### `server.py`
+- Async entry point
+- Starts all enabled services
+- Handles graceful shutdown
+
+#### `session.py`
+Represents a single attacker connection.
+Tracks:
+- `session_id`
+- Source IP and port
+- Timestamps
+- Behavior counters
+
+#### `events.py`
+Defines canonical event types, such as:
+- `AUTH_ATTEMPT`
+- `COMMAND_EXEC`
+- `HTTP_REQUEST`
+
+#### `config.py`
+- Loads and validates YAML configs
+- Provides centralized config access
 
 ---
 
-### 3️⃣ Behavior Captured
-The system observes and records:
+### 🌐 `honeypot/services/`
+Protocol-specific deception logic.
 
-- Username attempts
-- Command strings
-- Request frequency
-- Time gaps between actions
-- Session duration
-- Protocol-specific metadata
+#### `base.py`
+Abstract service interface enforcing:
+- `start()`
+- `handle_client()`
+- `emit_event()`
 
----
+#### `ssh.py`
+- Fake SSH handshake
+- Simulated authentication
+- Command capture (no execution)
 
-### 4️⃣ Structured Logging
-- Every interaction is converted into a **structured JSON event**
-- Events include:
-  - Session ID
-  - Source IP
-  - Action type
-  - Timestamp
-  - Raw payload (sanitized)
-- Logs are stored in **SQLite** for durability and analysis
+#### `http.py`
+- Fake HTTP endpoints
+- Mimics real frameworks and servers
 
----
+#### `ftp.py`
+- Fake login flow
+- Fake directory listings
 
-### 5️⃣ ML Engine Processes Data
-- Runs:
-  - Periodically **or**
-  - In near real-time
-- Extracts behavioral features such as:
-  - Command entropy
-  - Request rate
-  - Known payload signatures
-  - Timing variance
+Each service is **plug-and-play**.
 
 ---
 
-### 6️⃣ Attacker Classification
-Based on learned behavior, attackers are classified into profiles such as:
+### 📜 `honeypot/logging/`
+Structured, security-grade logging.
 
-- `bruteforce bot`
-- `worm-like scanner`
-- `human manual attacker`
+#### `logger.py`
+- Central async logger
+- Writes structured JSON logs
+- Forwards events to database
 
-These profiles are continuously refined as more data is collected.
-
----
-
-### 7️⃣ Adaptive Response Triggered
-The **Adaptive Response Engine** modifies system behavior dynamically:
-
-- **Bots**
-  - Slower responses
-  - Artificial hangs
-- **Human attackers**
-  - Deeper fake filesystem
-  - More believable interaction
-- **Scanners**
-  - Misleading HTTP headers
-  - False service fingerprints
+#### `formatter.py`
+- Normalizes event schema
+- Guarantees consistency across services
 
 ---
 
-### 8️⃣ Dashboard Updates
-The dashboard updates in real time with:
+### 💾 `honeypot/storage/`
+Persistence layer.
 
-- Live attack feed
-- Updated statistics
-- Behavior cluster changes
-- Session evolution timeline
+#### `database.py`
+- SQLite connection
+- WAL mode enabled
+- Safe concurrent access
 
----
-
-## ⚖️ 4. Ethical & Legal Scope (Critical)
-
-This project is designed **strictly for defensive security research**.
-
----
-
-### 🚫 Explicit Boundaries
-The system **does NOT** perform:
-
-- ❌ Real exploitation
-- ❌ Reverse shells
-- ❌ Malware delivery
-- ❌ Outbound scanning
-- ❌ Retaliation of any kind
+#### `models.py`
+Database tables:
+- `sessions`
+- `events`
+- `features`
+- `profiles`
 
 ---
 
-### ✅ Allowed Activities
-The system **only performs**:
+### 🤖 `honeypot/ml/`
+Learning and intelligence layer.
 
-- ✔ Passive observation
-- ✔ Deception via fake responses
-- ✔ Synthetic, isolated environments
-- ✔ Academic, hackathon, and research usage
+#### `features.py`
+- Converts raw events into numeric features
+- Stateless and deterministic
 
----
+#### `clustering.py`
+- ML logic (e.g., DBSCAN, KMeans)
+- Runs periodically or on demand
 
-### 🛡️ Design Safeguards
-- No OS command execution
-- No file writes outside the project directory
-- No privilege escalation
-- Clear warning banner in the README
-- Default bind address: `127.0.0.1` (localhost)
-- External exposure requires explicit configuration
-
-These safeguards ensure the project remains **legal, ethical, and defensible**.
+#### `profiles.py`
+- Maps clusters to attacker types
+- Profiles are stored and reused
 
 ---
 
-## 🧬 5. How Adaptability Works (Core Idea)
+### 🎭 `honeypot/adapt/`
+Where intelligence turns into deception.
 
-Adaptability in this system is **behavior-driven**, not signature-driven.
+#### `engine.py`
+- Core decision engine
+- Inputs:
+  - Session state
+  - ML behavior profile
+- Outputs:
+  - Selected response strategy
 
----
-
-### 🔄 What Changes Dynamically?
-- Protocol responses
-- Timing delays
-- Error messages
-- Fake system state
-- Depth of interaction
-
----
-
-### ⏱️ When Does It Adapt?
-- After sufficient data points per session
-- When attacker behavior crosses defined thresholds
-- When ML cluster confidence increases
+#### `strategies.py`
+Reusable deception behaviors, such as:
+- `slow_responder`
+- `fake_fs`
+- `banner_mutation`
 
 ---
 
-### 🧠 Why This Works
-- Bots expect consistency → broken by randomness
-- Humans probe deeper → rewarded with fake depth
-- Automated tools misclassify the environment
+### 📊 `dashboard/`
+Read-only visualization layer.
+
+#### `app.py`
+- Flask application factory
+
+#### `routes.py`
+- REST API endpoints
+
+#### `templates/`
+- Minimal HTML templates
+
+#### `static/`
+- JavaScript for polling and charts
+
+> The dashboard never interacts directly with honeypot internals.
 
 ---
 
-### 📊 Adaptive Response Examples
-
-| Behavior Detected        | Adaptive Response                         |
-|--------------------------|-------------------------------------------|
-| SSH brute-force          | Add 2–5 second response delays             |
-| Recon scanner            | Return misleading service banners          |
-| Manual shell interaction | Fake `/etc/passwd`, fake running processes |
-| Known exploit payload    | Simulated vulnerable response              |
-
-The system **learns patterns, not exploits**, making it resilient to zero-day techniques.
+### 🛠️ `scripts/`
+Operational helpers:
+- `run_honeypot.py` — start the honeypot
+- `init_db.py` — initialize database schema
 
 ---
+
+## 🔗 3. How Modules Communicate
+
+### Communication Pattern: **Event-Driven**
+
+Service → Session → Event → Logger → Database
+↓
+ML
+↓
+Adaptive Engine
+↓
+Service Behavior
+
+### Key Rules
+- Services never talk directly to ML
+- ML never touches the network
+- Dashboard never mutates data
+- All intelligence flows through events
+
+This avoids tight coupling, race conditions, and hidden dependencies.
+
+---
+
+
+
