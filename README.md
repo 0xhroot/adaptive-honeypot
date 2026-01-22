@@ -92,80 +92,79 @@ The goal is to **confuse attackers while gathering intelligence**.
 
 ## 📁 Project Structure
 
-The repository is organized to ensure **modularity, clarity, and long-term extensibility**.
+The repository is organized to ensure **modularity**, **clarity**, and **long-term extensibility**.
 
+```text
 adaptive-honeypot/
 ├── README.md
 ├── pyproject.toml / requirements.txt
 ├── config/
-│ ├── global.yaml
-│ ├── services.yaml
-│ ├── logging.yaml
-│ └── ml.yaml
+│   ├── global.yaml
+│   ├── services.yaml
+│   ├── logging.yaml
+│   └── ml.yaml
 │
 ├── honeypot/
-│ ├── init.py
-│ │
-│ ├── core/
-│ │ ├── init.py
-│ │ ├── server.py
-│ │ ├── session.py
-│ │ ├── events.py
-│ │ └── config.py
-│ │
-│ ├── services/
-│ │ ├── init.py
-│ │ ├── base.py
-│ │ ├── ssh.py
-│ │ ├── http.py
-│ │ └── ftp.py
-│ │
-│ ├── logging/
-│ │ ├── init.py
-│ │ ├── logger.py
-│ │ └── formatter.py
-│ │
-│ ├── storage/
-│ │ ├── init.py
-│ │ ├── database.py
-│ │ └── models.py
-│ │
-│ ├── ml/
-│ │ ├── init.py
-│ │ ├── features.py
-│ │ ├── clustering.py
-│ │ └── profiles.py
-│ │
-│ ├── adapt/
-│ │ ├── init.py
-│ │ ├── engine.py
-│ │ └── strategies.py
-│ │
-│ └── utils/
-│ ├── init.py
-│ ├── timing.py
-│ └── net.py
+│   ├── __init__.py
+│   │
+│   ├── core/
+│   │   ├── __init__.py
+│   │   ├── server.py
+│   │   ├── session.py
+│   │   ├── events.py
+│   │   └── config.py
+│   │
+│   ├── services/
+│   │   ├── __init__.py
+│   │   ├── base.py
+│   │   ├── ssh.py
+│   │   ├── http.py
+│   │   └── ftp.py
+│   │
+│   ├── logging/
+│   │   ├── __init__.py
+│   │   ├── logger.py
+│   │   └── formatter.py
+│   │
+│   ├── storage/
+│   │   ├── __init__.py
+│   │   ├── database.py
+│   │   └── models.py
+│   │
+│   ├── ml/
+│   │   ├── __init__.py
+│   │   ├── features.py
+│   │   ├── clustering.py
+│   │   └── profiles.py
+│   │
+│   ├── adapt/
+│   │   ├── __init__.py
+│   │   ├── engine.py
+│   │   └── strategies.py
+│   │
+│   └── utils/
+│       ├── __init__.py
+│       ├── timing.py
+│       └── net.py
 │
 ├── dashboard/
-│ ├── app.py
-│ ├── routes.py
-│ ├── templates/
-│ │ └── index.html
-│ └── static/
-│ ├── css/
-│ └── js/
+│   ├── app.py
+│   ├── routes.py
+│   ├── templates/
+│   │   └── index.html
+│   └── static/
+│       ├── css/
+│       └── js/
 │
 ├── scripts/
-│ ├── run_honeypot.py
-│ └── init_db.py
+│   ├── run_honeypot.py
+│   └── init_db.py
 │
 └── data/
-├── honeypot.db
-└── logs/
+    ├── honeypot.db
+    └── logs/
+```
 
-
-
----
 
 ## 🧩 2. Responsibility of Each Major Module
 
@@ -327,7 +326,7 @@ Operational helpers:
 ---
 
 
-## 🗺️ 2. Text-Based Architecture Diagram
+## 🗺️ 3. Text-Based Architecture Diagram
 
 ```text
                 ┌────────────────────┐
@@ -377,8 +376,7 @@ Operational helpers:
         │  - live feed                     │
         │  - charts                        │
         │  - behavior clusters             │
-        └─────────────────────────────────┘ 
----
+        └─────────────────────────────────┘
 
-
+```
 
