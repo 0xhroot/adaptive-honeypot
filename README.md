@@ -298,12 +298,20 @@ Reusable deception behaviors, such as:
 - `banner_mutation`
 
 ---
+### 🔐 Fake SSH Session
+
+![SSH Honeypot Session](sc/1.png)
+
 
 ### 📊 `dashboard/`
 Read-only visualization layer.
 
 #### `app.py`
 - Flask application factory
+
+### 📊 Live Dashboard
+
+![Live Dashboard](sc/2.png)
 
 #### `routes.py`
 - REST API endpoints
@@ -313,6 +321,11 @@ Read-only visualization layer.
 
 #### `static/`
 - JavaScript for polling and charts
+
+### 📊 Live Dashboard
+
+![Live Dashboard](sc/3.png)
+
 
 > The dashboard never interacts directly with honeypot internals.
 
