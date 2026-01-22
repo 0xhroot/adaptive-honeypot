@@ -454,29 +454,29 @@ git clone https://github.com/0xhroot/adaptive-honeypot.git
 cd adaptive-honeypot
 ```
 
-##🧪 2. Create & Activate Virtual Environment (Required)
+## 🧪 2. Create & Activate Virtual Environment (Required)
 
-##Linux / macOS / WSL
+## Linux / macOS / WSL
 ```bash
 python3 -m venv venv
 source venv/bin/activate
 ```
 
-###Windows (PowerShell)
+### Windows (PowerShell)
 ```bash
 python -m venv venv
 venv\Scripts\Activate.ps1
 
 ```
 
-###📦 3. Install Dependencies
+### 📦 3. Install Dependencies
 ```bash
 
 pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-###🗄 4. Initialize Database (Run Once)
+### 🗄 4. Initialize Database (Run Once)
 ```bash
 
 python scripts/init_db.py
@@ -487,16 +487,16 @@ This creates:
 data/honeypot.db
 ```
 
-###▶️ 5. Start the Honeypot
+### ▶️ 5. Start the Honeypot
 ```bash
 python scripts/run_honeypot.py
 ```
 
-###Expected output:
+### Expected output:
 
 [+] SSH Honeypot listening on port 2222
 
-###🌐 6. Start the Dashboard (New Terminal)
+### 🌐 6. Start the Dashboard (New Terminal)
 ```bash
 source venv/bin/activate
 python dashboard/app.py
@@ -507,12 +507,12 @@ Open:
 http://127.0.0.1:5000
 ```
 
-###🧪 7. Test (Safe)
+### 🧪 7. Test (Safe)
 ```bash
 nc 127.0.0.1 2222
 ```
 
-###Try fake commands:
+### Try fake commands:
 ```bash
 ls
 whoami
