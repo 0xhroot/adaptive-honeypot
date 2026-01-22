@@ -1,0 +1,11 @@
+ml:
+  enabled: true
+
+  clustering:
+    algorithm: dbscan
+    eps: 2.5
+    min_samples: 2
+
+  thresholds:
+    brute_force_attempts: 5
+    fast_command_rate: 3.0

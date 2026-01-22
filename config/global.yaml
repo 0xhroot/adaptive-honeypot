@@ -1,0 +1,11 @@
+project:
+  name: adaptive-honeypot
+  environment: development
+
+network:
+  bind_address: "0.0.0.0"
+  max_connections: 500
+
+security:
+  max_session_duration: 600   # seconds
+  idle_timeout: 120           # seconds

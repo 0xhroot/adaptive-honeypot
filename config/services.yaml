@@ -1,0 +1,14 @@
+services:
+  ssh:
+    enabled: true
+    port: 2222
+    banner: "OpenSSH_8.9p1 Ubuntu-3"
+    max_commands: 50
+
+  http:
+    enabled: false
+    port: 8080
+
+  ftp:
+    enabled: false
+    port: 2121

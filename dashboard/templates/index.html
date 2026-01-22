@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Adaptive Honeypot Dashboard</title>
+    <style>
+        body {
+            font-family: monospace;
+            background: #0d1117;
+            color: #c9d1d9;
+            padding: 20px;
+        }
+        h1 { color: #58a6ff; }
+        .box {
+            border: 1px solid #30363d;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        .event {
+            border-bottom: 1px solid #30363d;
+            padding: 4px;
+            font-size: 13px;
+        }
+        .tag {
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            margin-right: 6px;
+        }
+        .auth { background: #da3633; }
+        .cmd { background: #238636; }
+        .conn { background: #8957e5; }
+    </style>
+</head>
+<body>
+
+<h1>🛡 Adaptive Honeypot Dashboard</h1>
+
+<div class="box">
+    <h3>Live Events</h3>
+    <div id="events"></div>
+</div>
+
+<div class="box">
+    <h3>Attacker Profiles</h3>
+    <div id="profiles"></div>
+</div>
+
+<script>
+async function loadEvents() {
+    const res = await fetch("/api/events");
+    const data = await res.json();
+    const el = document.getElementById("events");
+    el.innerHTML = "";
+
+    data.forEach(e => {
+        const div = document.createElement("div");
+        div.className = "event";
+
+        let cls = "conn";
+        if (e.type === "auth_attempt") cls = "auth";
+        if (e.type === "command") cls = "cmd";
+
+        div.innerHTML = `
+            <span class="tag ${cls}">${e.type}</span>
+            ${e.timestamp} — ${JSON.stringify(e.payload)}
+        `;
+        el.appendChild(div);
+    });
+}
+
+async function loadProfiles() {
+    const res = await fetch("/api/profiles");
+    const data = await res.json();
+    const el = document.getElementById("profiles");
+    el.innerHTML = "";
+
+    data.forEach(p => {
+        const div = document.createElement("div");
+        div.textContent = `${p.session_id} → ${p.profile}`;
+        el.appendChild(div);
+    });
+}
+
+setInterval(() => {
+    loadEvents();
+    loadProfiles();
+}, 2000);
+
+loadEvents();
+loadProfiles();
+</script>
+
+</body>
+</html>
