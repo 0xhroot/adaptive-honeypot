@@ -380,3 +380,141 @@ Operational helpers:
 
 ```
 
+## 🔐 6. How Real SSH Attacks Behave (Why This Design Matters)
+
+Understanding **real-world attacker behavior** is critical to building an effective honeypot.
+
+### 🧠 Typical SSH Attack Pattern
+Most automated tools and human attackers follow a predictable flow:
+
+1. Connect to the target SSH service  
+2. Read the SSH banner  
+3. Attempt username/password authentication  
+4. If authentication appears successful:
+   - Send shell commands
+   - Enumerate the system  
+     - `uname -a`
+     - `ls`
+     - `cat /etc/passwd`
+
+This honeypot simulates **just enough of this behavior** to appear real while remaining completely safe.
+
+---
+
+## ⚙️ 6.1 Core Design Choices (SSH Honeypot)
+
+The SSH honeypot is intentionally **minimal, controlled, and deceptive**.
+
+| Area        | Decision                                   |
+|-------------|---------------------------------------------|
+| Protocol    | Raw TCP (not a real SSH implementation)     |
+| Port        | `2222` (safe, non-privileged default)       |
+| Banner      | Configurable OpenSSH-style banner           |
+| Auth        | Always fails **or** fake-success (config)   |
+| Shell       | Text-based fake shell                       |
+| Commands    | Logged only, never executed                 |
+| Responses   | Static initially, adaptive over time        |
+
+This approach avoids complexity while still capturing **valuable attacker behavior**.
+
+---
+
+## 🔄 6.2 Fake SSH Interaction Flow
+
+The SSH honeypot follows a realistic but fully simulated interaction flow:
+
+```text
+Client connects
+        ↓
+Send SSH banner
+        ↓
+Prompt for username
+        ↓
+Prompt for password
+        ↓
+Log credentials
+        ↓
+Fake authentication result
+        ↓
+If fake-success:
+    ├── Present fake shell prompt
+    ├── Log every command entered
+    └── Respond with fake command output
+```
+
+# 🚀 Installation & Quick Start
+
+> ⚠️ Run locally for research and learning only.
+
+---
+
+## 📥 1. Clone the Repository
+```bash
+git clone https://github.com/0xhroot/adaptive-honeypot.git
+cd adaptive-honeypot
+```
+
+##🧪 2. Create & Activate Virtual Environment (Required)
+
+##Linux / macOS / WSL
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+###Windows (PowerShell)
+```bash
+python -m venv venv
+venv\Scripts\Activate.ps1
+
+```
+
+###📦 3. Install Dependencies
+```bash
+
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+###🗄 4. Initialize Database (Run Once)
+```bash
+
+python scripts/init_db.py
+```
+
+This creates:
+```bash
+data/honeypot.db
+```
+
+###▶️ 5. Start the Honeypot
+```bash
+python scripts/run_honeypot.py
+```
+
+###Expected output:
+
+[+] SSH Honeypot listening on port 2222
+
+###🌐 6. Start the Dashboard (New Terminal)
+```bash
+source venv/bin/activate
+python dashboard/app.py
+```
+
+Open:
+```bash
+http://127.0.0.1:5000
+```
+
+###🧪 7. Test (Safe)
+```bash
+nc 127.0.0.1 2222
+```
+
+###Try fake commands:
+```bash
+ls
+whoami
+uname -a
+```
