@@ -531,3 +531,49 @@ ls
 whoami
 uname -a
 ```
+
+
+---
+
+## 🚀 Future Work
+
+This project is intentionally modular and extensible.  
+Possible future enhancements include:
+
+- Additional honeypot services (SMTP, DNS, Telnet)
+- More advanced ML models for behavior profiling
+- Real-time adaptive deception strategies
+- Threat-intelligence integration
+- Long-term attacker behavior correlation
+
+The goal is to evolve this into a **research-grade adaptive deception platform**.
+
+Contributions and ideas are welcome.
+
+
+
+---
+
+## 🧠 Final Notes
+
+This project is intentionally designed as a **defensive security research tool**.  
+It focuses on **observation, behavior analysis, and deception**, not exploitation.
+
+- No real services are exposed
+- No attacker commands are executed
+- No outbound scanning or retaliation occurs
+
+If you use or extend this project, **do so responsibly** and within legal boundaries.
+
+---
+
+## ⚖️ Ethical Use Disclaimer
+
+This repository is provided **for educational, research, and hackathon purposes only**.
+
+Any misuse, including deploying this system against real targets without authorization,
+is **strictly discouraged**.  
+The author assumes **no responsibility** for improper or illegal usage.
+
+Use knowledge to **defend systems, not harm them**.
+
