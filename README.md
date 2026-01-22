@@ -139,7 +139,7 @@ The goal is to **confuse attackers while gathering intelligence**.
         │  - live feed                     │
         │  - charts                        │
         │  - behavior clusters             │
-        └─────────────────────────────────┘```
+        └─────────────────────────────────┘ text```
 
 
 
